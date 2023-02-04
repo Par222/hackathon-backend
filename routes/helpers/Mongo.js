@@ -18,7 +18,7 @@ db.getField = async (schema, keys) => {
 };
 
 db.putField = async (schema, keys, options) => {
-  let result = await schema.updateOne(keys, options);
+  let result = await schema.updateMany(keys, options);
   return await db.getField(schema, keys);
 };
 

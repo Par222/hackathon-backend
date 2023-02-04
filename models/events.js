@@ -27,7 +27,7 @@ const eventSchema = new mongoose.Schema({
   },
   venue: {
     type: mongoose.Types.ObjectId,
-    // ref: 'Venue',
+    ref: 'Venue',
   },
   description: {
     type: String,
@@ -40,7 +40,7 @@ const eventSchema = new mongoose.Schema({
   request: {
     type: mongoose.Types.ObjectId,
     default: null,
-    // ref: 'Request',
+    // ref: 'ApprovalRequest',
   },
   attendance: {
     default: [],

@@ -6,13 +6,22 @@ const moment = require('moment');
 
 const eventsControllers = {};
 
-// eventsControllers.getVenue = async (req, res) => {
-//   const payload = {
-//     ...req.body,
-//   };
-//   const result = await db.getField(Venue, {});
-//   res.json(result);
-// };
+eventsControllers.addVenue = async (req, res) => {
+  const payload = {
+    ...req.body,
+  };
+  const result = await db.putField(
+    Venue,
+    {},
+    {
+      $set: {
+        image:
+          'https://www.brilliantpublicschool.org/assets/images/computer-lab.jpg',
+      },
+    }
+  );
+  res.json(result);
+};
 
 eventsControllers.createEvent = async (req, res) => {
   let { name, committee, date, description } = req.body;
@@ -38,14 +47,13 @@ eventsControllers.createEvent = async (req, res) => {
 };
 
 eventsControllers.getEvents = async (req, res) => {
-  const id = req.body.id;
   const { usertype } = req.body;
-  const { domain, keyword } = req.query;
+  const { domain, keyword, id } = req.query;
   let keys = {};
   if (usertype == 'student') {
     keys.status = 'approved';
   }
-  if (req.body.id) {
+  if (id) {
     keys._id = id;
   }
   if (keyword) {
