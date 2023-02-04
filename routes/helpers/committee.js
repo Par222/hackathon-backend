@@ -13,5 +13,11 @@ async function updateCommitee(committeeID, newCommittee) {
   return committee.toObject({ getters: true });
 }
 
+async function fetchCommitteeDetails(fields) {
+  const committee = Committee.findOne(fields);
+  return committee.toObject({ getters: true });
+}
+
 module.exports.addCommittee = addCommittee;
 module.exports.updateCommitee = updateCommitee;
+module.exports.fetchCommitteeDetails = fetchCommitteeDetails;
