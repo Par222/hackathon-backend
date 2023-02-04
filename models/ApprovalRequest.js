@@ -1,13 +1,17 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const ApprovalRequestSchema = new mongoose.Schema({
   eventID: {
     type: mongoose.Types.ObjectId,
-    ref: "Event",
+    ref: 'Event',
   },
   committeeID: {
     type: mongoose.Types.ObjectId,
-    ref: "Committee",
+    ref: 'Committee',
+  },
+  facultyID: {
+    type: mongoose.Types.ObjectId,
+    ref: 'Faculty',
   },
   status_level: {
     type: Number,
@@ -15,9 +19,9 @@ const ApprovalRequestSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    default: "Pending",
+    default: 'Pending',
   },
   permission_documents: [{ type: String }],
 });
 
-module.exports = mongoose.model("ApprovalRequest", ApprovalRequestSchema);
+module.exports = mongoose.model('ApprovalRequest', ApprovalRequestSchema);

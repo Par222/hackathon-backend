@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
 const Event = require('../../models/events');
 const Venue = require('../../models/Venue');
+const UserType = require('../../models/UserType');
 const db = require('../helpers/Mongo');
+const ApprovalRequest = require('../../models/ApprovalRequest');
 const moment = require('moment');
 
 const eventsControllers = {};
@@ -81,6 +83,7 @@ eventsControllers.deleteEvent = async (req, res) => {
     id,
   };
   const event = await db.getField(Event, keys);
+  // const result = await db.deleteField(Event, keys);
   const result = await db.deleteField(Event, keys);
   if (event.venue) {
     let venue = db.getField(Venue, { _id: event.venue });
@@ -125,6 +128,36 @@ eventsControllers.getRooms = async (req, res) => {
   //     date: { $lt: date },
   //   });
   //   res.json([...before, ...after]);
+};
+
+eventsControllers.getRequests = async (res, req) => {
+  let results;
+  if (req.body.designation == 'gs') {
+    results = await db.getFields(ApprovalRequest, {
+      status_level: 1,
+      status: 'pending',
+    });
+  } else if (req.body.designation == 'faculty') {
+    results = await db.getFields(ApprovalRequest, {
+      status_level: 2,
+      facultyID: req.body.facultyid || req.body.facultyID,
+      status: 'pending',
+    });
+  } else if (req.body.description == 'dean') {
+    results = await db.getFields(ApprovalRequest, {
+      status_level: 3,
+    });
+  }
+  results = await Promise.all(
+    results.map(async (e) => {
+      return await db.getField(Event, { _id: e.eventID });
+    })
+  );
+  results = await Promise.all(
+    results.map(async (e) => {
+      return await db.getField(Committee, { _id: e.committee });
+    })
+  );
 };
 
 module.exports = eventsControllers;
