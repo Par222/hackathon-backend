@@ -8,5 +8,6 @@ router.delete('/', eventsControllers.deleteEvent);
 router.patch('/', eventsControllers.updateEvent);
 router.post('/venues', eventsControllers.getRooms);
 router.get('/v', eventsControllers.addVenue);
+router.get('/venues', eventsControllers.getVenue);
 
 module.exports = router;
