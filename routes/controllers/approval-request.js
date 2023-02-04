@@ -19,6 +19,9 @@ async function createApprovalRequest(req, res, err) {
     const faculty = await helper?.getField(Faculty, {
       designation: "gs",
     });
+    const event = await helper?.getField(Event, {
+      id: req?.body?.eventID,
+    });
     emailService?.sendEmail({
       to: faculty?.email,
       subject: "Permission Letter",
