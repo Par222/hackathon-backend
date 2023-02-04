@@ -27,9 +27,10 @@ app.use((error, req, res, next) => {
 });
 mongoose
   .connect(
-    ""
+    "mongodb+srv://parasMehta:para2222@cluster0.aaspp2v.mongodb.net/hackathon?retryWrites=true&w=majority"
   )
   .then(() => {
+    console.log("Listening")
     app.listen(5000);
   })
   .catch((error) => {
