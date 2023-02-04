@@ -7,7 +7,7 @@ const moment = require('moment');
 const eventsControllers = {};
 
 eventsControllers.getVenue = async (req, res) => {
-  const result = await db.getField(Venue, { _id: req.body.id });
+  const result = await db.getField(Venue, { _id: req.query.id });
   res.json(result);
 };
 
