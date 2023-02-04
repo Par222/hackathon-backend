@@ -1,5 +1,5 @@
 const Committee = require('../../models/Committee');
-const { db } = require('../../models/UserType');
+const db = require('../helpers/Mongo');
 const HttpError = require('../errors/http-error');
 const committeeHelper = require('../helpers/committee');
 
