@@ -18,10 +18,14 @@ eventsControllers.createEvent = async (req, res) => {
 
 eventsControllers.getEvents = async (req, res) => {
   const id = req.body.id;
-  //   const keys = {
-  //     id,
-  //   };
-  const result = await db.getFields(Event, {});
+  const { usertype } = req.body;
+  const { domain } = req.query;
+  let keys = {};
+  if (usertype == 'student') {
+    keys.status = 'approved';
+  }
+  if (domain) keys.domain = domain;
+  const result = await db.getFields(Event, keys);
   res.json(result);
 };
 
