@@ -9,6 +9,7 @@ const FacultySchema = new mongoose.Schema({
     type: String,
   },
   requests: Array,
+  email: String,
 });
 
 module.exports = FacultySchema;
