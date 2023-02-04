@@ -3,6 +3,8 @@ const bodyParser = require("body-parser");
 const app = express();
 const mongoose = require("mongoose");
 
+const authRoutes = require("./routes/auth-routes");
+const committeeRoutes = require("./routes/committee");
 
 // CORS error handling
 app.use((req, res, next) => {
@@ -16,7 +18,10 @@ app.use((req, res, next) => {
 });
 
 app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: false }));
 
+app.use(`/api/auth/`, authRoutes);
+app.use(`/api/committee/`, committeeRoutes);
 
 app.use((error, req, res, next) => {
   if (res.headerSent) {
@@ -30,7 +35,7 @@ mongoose
     "mongodb+srv://parasMehta:para2222@cluster0.aaspp2v.mongodb.net/hackathon?retryWrites=true&w=majority"
   )
   .then(() => {
-    console.log("Listening")
+    console.log("Listening");
     app.listen(5000);
   })
   .catch((error) => {
