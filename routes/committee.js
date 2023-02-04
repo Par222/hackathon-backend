@@ -4,4 +4,6 @@ const router = express.Router();
 
 router.patch("/:committeeID", committeeController?.addCommitteeDetails);
 
+router.get("/:committeeID", committeeController?.fetchCommitteeDetails);
+
 module.exports = router;

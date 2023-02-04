@@ -7,11 +7,18 @@ async function addCommittee(newCommittee) {
 }
 
 async function updateCommitee(committeeID, newCommittee) {
-  const committee = Committee.findByIdAndUpdate(committeeID, newCommittee, {
+  const committee = await Committee.findByIdAndUpdate(committeeID, newCommittee, {
     new: true,
   });
   return committee.toObject({ getters: true });
 }
 
+async function fetchCommitteeDetails(fields) {
+  const committee = await Committee.findOne(fields);
+  console.log(committee)
+  return committee.toObject({ getters: true });
+}
+
 module.exports.addCommittee = addCommittee;
 module.exports.updateCommitee = updateCommitee;
+module.exports.fetchCommitteeDetails = fetchCommitteeDetails;

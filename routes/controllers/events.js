@@ -60,7 +60,17 @@ eventsControllers.getEvents = async (req, res) => {
     keys.name = { $regex: keyword, $options: 'i' };
   }
   if (domain) keys.domain = domain;
-  const result = await db.getFields(Event, keys);
+  let result = await db.getFields(Event, keys);
+  result = await Promise.all(
+    result.map(async (e) => {
+      let obj = e;
+      if (e.venue) {
+        let ven = await db.getField(Venue, { _id: e.venue });
+        obj.venue = ven?.name;
+      }
+      return obj;
+    })
+  );
   res.json(result);
 };
 
