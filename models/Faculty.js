@@ -6,8 +6,7 @@ const FacultySchema = new mongoose.Schema({
     required: true,
   },
   committee: {
-    type: mongoose.Types.ObjectId,
-    ref: "Committee",
+    type: String
   },
   requests: Array,
   email: String,

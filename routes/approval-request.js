@@ -8,6 +8,6 @@ router.get("/:requestID", approvalRequestController?.fetchARequest);
 
 router.patch("/:requestID", approvalRequestController?.approveApprovalRequest);
 
-router.post("/", approvalRequestController?.approveApprovalRequest);
+router.post("/", approvalRequestController?.createApprovalRequest);
 
 module.exports = router;
