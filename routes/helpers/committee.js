@@ -7,7 +7,7 @@ async function addCommittee(newCommittee) {
 }
 
 async function updateCommitee(committeeID, newCommittee) {
-  const committee = Committee.findByIdAndUpdate(committeeID, newCommittee, {
+  const committee = await Committee.findByIdAndUpdate(committeeID, newCommittee, {
     new: true,
   });
   return committee.toObject({ getters: true });
