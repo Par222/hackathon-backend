@@ -1,36 +1,39 @@
-const express = require("express");
-const bodyParser = require("body-parser");
+const express = require('express');
+const bodyParser = require('body-parser');
 const app = express();
-const mongoose = require("mongoose");
-
+const mongoose = require('mongoose');
+const eventRoutes = require('./routes/events');
 
 // CORS error handling
 app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept, Authorization'
   );
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE");
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE');
   next();
 });
 
 app.use(bodyParser.json());
-
+app.use(express.urlencoded({ extended: false }));
 
 app.use((error, req, res, next) => {
   if (res.headerSent) {
     return next(error);
   }
   res.status(error.code || 500);
-  res.json({ message: error.message || "Invalid request" });
+  res.json({ message: error.message || 'Invalid request' });
 });
+
+app.use('/api/events', eventRoutes);
+
 mongoose
   .connect(
-    "mongodb+srv://parasMehta:para2222@cluster0.aaspp2v.mongodb.net/hackathon?retryWrites=true&w=majority"
+    'mongodb+srv://parasMehta:para2222@cluster0.aaspp2v.mongodb.net/hackathon?retryWrites=true&w=majority'
   )
   .then(() => {
-    console.log("Listening")
+    console.log('Listening');
     app.listen(5000);
   })
   .catch((error) => {
