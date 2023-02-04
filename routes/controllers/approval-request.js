@@ -18,7 +18,7 @@ async function createApprovalRequest(req, res, err) {
     res.json({
       request: request,
     });
-    const faculty = await helper?.getField(Faculty, {
+    const gs = await helper?.getField(Faculty, {
       designation: "gs",
     });
 
@@ -29,6 +29,14 @@ async function createApprovalRequest(req, res, err) {
       id: event?.committeeID,
     });
     const venue = await helper?.getField(Venue, { id: event?.venue });
+
+    const dean = await helper?.getField(Faculty, {
+      designation: "Dean",
+    });
+
+    const faculty = await helper?.getField(Faculty, {
+      id: committee?.faculty_coordinatorID,
+    });
 
     emailService?.sendEmail({
       to: faculty?.email,
@@ -45,6 +53,10 @@ async function createApprovalRequest(req, res, err) {
         deanSignature: "",
         facultySignature: "",
         genSecSignature: "",
+        deanName: dean?.name,
+        facultyName: faculty?.name,
+        gsName: gs?.name,
+        approvalLink: "http://localhost:3000/authorities/gs",
       },
     });
   } catch (error) {
@@ -144,12 +156,16 @@ async function approveApprovalRequest(req, res, err) {
           deanSignature: "",
           facultySignature: "",
           genSecSignature: genSec?.signature,
+          deanName: dean?.name,
+          facultyName: faculty?.name,
+          gsName: gd?.name,
         },
         attachments: newStatus?.permission_documents,
       };
       if (req?.body?.status_level === 1) {
         emailService?.sendEmail({
           ...emailConfig,
+          approvalLink: `http://localhost:3000/authorities/faculty/${faculty?.id}`,
         });
       } else if (req?.body?.status_level === 2) {
         const dean = await helper?.getField(Faculty, {
@@ -158,7 +174,9 @@ async function approveApprovalRequest(req, res, err) {
         emailService?.sendEmail({
           ...emailConfig,
           to: dean?.email,
-          facultySignature: faculty?.id,
+          facultySignature: faculty?.signature,
+          approvalLink: `http://localhost:3000/authorities/Dean`,
+
         });
       }
     }

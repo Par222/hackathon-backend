@@ -33,7 +33,7 @@ async function fetchCommitteeDetails(req, res, err) {
 }
 
 async function getCommittees(req, res) {
-  const results = await db.getFields(Committee, {});
+  const results = await db.getFields(Committee, req?.query);
   res.json(results);
 }
 

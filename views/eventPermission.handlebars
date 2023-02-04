@@ -61,25 +61,37 @@
           </p>
           <p>Event Name: {{eventName}}</p>
           <p>Date: {{eventDate}}</p>
-          <p>Time: {{eventTime}}</p>
           <p>Start Time: {{eventStartTime}}</p>
           <p>End Time: {{eventEndTime}}</p>
           <p>Venue: {{eventVenue}}</p>
         </div>
         <p>Thanking you,</p>
       </div>
-      <div style="100%">
+      <div style="width: 100%; display: flex">
         <div style="width: 33%; height: 50px">
-          <img src={{deanSignature}} style="height: 100%; width: 100%; object-fit: contain; object-position: center">
-          <hr>
+          <img
+            src={{deanSignature}}
+            style="height: 100%; width: 100%; object-fit: contain; object-position: center"
+          />
+          <hr />
+          <p>{{deanName}}</p>
+
         </div>
         <div style="width: 33%; height: 50px; margin: 0 20px">
-          <img src={{facultySignature}} style="height: 100%; width: 100%; object-fit: contain; object-position: center">
-          <hr>
+          <img
+            src={{facultySignature}}
+            style="height: 100%; width: 100%; object-fit: contain; object-position: center"
+          />
+          <hr />
+          <p>{{facultyName}}</p>
         </div>
         <div style="width: 33%; height: 50px">
-          <img src={{genSecSignature}} style="height: 100%; width: 100%; object-fit: contain; object-position: center">
-          <hr>
+          <img
+            src={{genSecSignature}}
+            style="height: 100%; width: 100%; object-fit: contain; object-position: center"
+          />
+          <hr />
+          <p>{{gsName}}</p>
         </div>
       </div>
       <div style="height: 20px; background-color: #363636; width: 100%"></div>
