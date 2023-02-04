@@ -1,5 +1,6 @@
 const HttpError = require("../errors/http-error");
 const committeeHelper = require("../helpers/committee");
+const helper = require("../helpers/Mongo");
 
 async function addCommitteeDetails(req, res, err) {
   const committeeID = req?.params?.committeeID;

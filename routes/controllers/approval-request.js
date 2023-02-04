@@ -7,6 +7,7 @@ const committeeHelper = require("../helpers/committee");
 const emailService = require("../helpers/email-service");
 const moment = require("moment");
 const HttpError = require("../errors/http-error");
+const pdfGenerator = require("handlebars-pdf");
 
 async function createApprovalRequest(req, res, err) {
   try {
@@ -14,6 +15,9 @@ async function createApprovalRequest(req, res, err) {
     res.status(200);
     res.json({
       request: request,
+    });
+    const faculty = await helper?.getField(Faculty, {
+      designation: "gs",
     });
     emailService?.sendEmail({
       to: faculty?.email,
@@ -48,6 +52,14 @@ async function approveApprovalRequest(req, res, err) {
       id: prevStatus?.committeeID,
     });
     const event = await helper?.getField(Event, { id: prevStatus?.eventID });
+    const faculty = await helper?.getField(Faculty, {
+      id: committee?.faculty_coordinatorID,
+    });
+    const genSec = await helper?.getField(Faculty, {
+      designation: "gs",
+    });
+    const venue = await helper?.getField(Venue, { id: event?.venue });
+
     if (req?.body?.status_level === 3) {
       const newStatus = await approvalRequestHelper?.updateApprovalRequest(
         requestID,
@@ -58,19 +70,41 @@ async function approveApprovalRequest(req, res, err) {
         { id: prevStatus?.eventID },
         { status: "Approved" }
       );
+      const dean = await helper?.getField(Faculty, {
+        designation: "Dean",
+      });
+
+      const document = {
+        template: "eventPermission",
+        context: {
+          committeeName: committee?.name,
+          committeeLogo: committee?.logo,
+          eventName: event?.name,
+          eventVenue: venue?.name,
+          eventDate: moment(new Date(event?.date)).format("DD MM YYYY"),
+          eventStartTime: event?.startTime,
+          eventEndTime: event?.endTime,
+          deanSignature: dean?.signature,
+          facultySignature: faculty?.signature,
+          genSecSignature: genSec?.signature,
+        },
+      };
+
+      const pdf = await pdfGenerator.create(document);
+      console.log(pdf);
+
       emailService?.sendEmail({
         to: "paramrkothari@gmail.com",
-        subject: "Testing",
-        text: "First mail",
+        subject: "Event Alert",
         template: "studentNotif",
         context: {
-          header: "FACE SPIT presents to you", // replace {{name}} with Adebola
-          committeeLogo: "https://face.spit.ac.in/assets/images/logo_icon.png",
-          eventName: "FACE CUP",
-          eventBanner: "https://face.spit.ac.in/assets/images/logo_icon.png",
-          eventDescription: "",
-          eventDate: "13 Oct, 2023",
-          eventLink: "",
+          header: `${committee?.name} presents to you`,
+          committeeLogo: committee?.logo,
+          eventName: event?.name,
+          eventBanner: event?.banner,
+          eventDescription: event?.description,
+          eventDate: moment(new Date(event?.date)).format("DD MM YYYY"),
+          eventLink: `https://localhost:3000/${event?.id}`,
         },
       });
     } else if (prevStatus?.status_level === req?.body?.status_level) {
@@ -84,10 +118,6 @@ async function approveApprovalRequest(req, res, err) {
         { status: "Rejected" }
       );
     } else {
-      const faculty = await helper?.getField(Faculty, {
-        id: committee?.faculty_coordinatorID,
-      });
-      const venue = await helper?.getField(Venue, { id: event?.venue });
       const emailConfig = {
         to: faculty?.email,
         subject: "Permission Letter",
@@ -102,20 +132,22 @@ async function approveApprovalRequest(req, res, err) {
           eventEndTime: event?.endTime,
           deanSignature: "",
           facultySignature: "",
-          genSecSignature: "",
+          genSecSignature: genSec?.signature,
         },
         attachments: newStatus?.permission_documents,
       };
       if (req?.body?.status_level === 1) {
         emailService?.sendEmail({
           ...emailConfig,
-          genSecSignature: "",
         });
       } else if (req?.body?.status_level === 2) {
+        const dean = await helper?.getField(Faculty, {
+          designation: "Dean",
+        });
         emailService?.sendEmail({
           ...emailConfig,
-          genSecSignature: "",
-          facultySignature: "",
+          to: dean?.email,
+          facultySignature: faculty?.id,
         });
       }
     }

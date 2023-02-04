@@ -64,6 +64,14 @@ const eventSchema = new mongoose.Schema({
     type: String,
     default: "pending",
   },
+  approved_document: {
+    type: String,
+  },
+  permission_documents: [
+    {
+      type: String,
+    },
+  ],
 });
 
 const Event = mongoose.model("Event", eventSchema);
