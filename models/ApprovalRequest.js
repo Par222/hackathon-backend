@@ -13,6 +13,10 @@ const ApprovalRequestSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  status: {
+    type: String,
+    default: "Pending",
+  },
   permission_documents: [{ type: String }],
 });
 

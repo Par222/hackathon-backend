@@ -24,11 +24,12 @@ async function userSignup(req, res, err) {
       res.json({
         user: userData,
       });
+    } else {
+      res.status(500);
+      res.json({
+        message: "Committee already exists!",
+      });
     }
-    res.status(500);
-    res.json({
-      message: "Committee already exists!",
-    });
   } catch (error) {
     console.log(error);
     throw new HTTPError("Error signing up!", 500);
