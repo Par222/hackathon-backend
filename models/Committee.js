@@ -22,12 +22,11 @@ const CommitteeSchema = new mongoose.Schema({
   logo: {
     type: String,
   },
-  faculty_coordinatorID: [
-    {
-      type: mongoose.Types.ObjectId,
-      ref: "Faculty",
-    },
-  ],
+  faculty_coordinatorID: {
+    type: mongoose.Types.ObjectId,
+    ref: "Faculty",
+  },
+
   type: {
     type: String,
   },

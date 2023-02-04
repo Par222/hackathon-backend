@@ -13,6 +13,12 @@ const FacultySchema = new mongoose.Schema({
   signature: {
     type: String,
   },
+  image: {
+    type: String,
+  },
+  designation: {
+    type: String,
+  },
 });
 
 module.exports = mongoose.model("Faculty", FacultySchema);

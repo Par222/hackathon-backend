@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const eventSchema = new mongoose.Schema({
   name: {
@@ -21,13 +21,16 @@ const eventSchema = new mongoose.Schema({
     type: String,
     // required: true,
   },
-  registrations: {
-    type: Array,
-    default: [],
-  },
+  registrations: [
+    {
+      type: mongoose.Types.ObjectId,
+      // ref: "Student",
+    },
+  ],
+
   venue: {
     type: mongoose.Types.ObjectId,
-    ref: 'Venue',
+    ref: "Venue",
   },
   description: {
     type: String,
@@ -59,10 +62,10 @@ const eventSchema = new mongoose.Schema({
   domain: String,
   status: {
     type: String,
-    default: 'pending',
+    default: "pending",
   },
 });
 
-const Event = mongoose.model('Event', eventSchema);
+const Event = mongoose.model("Event", eventSchema);
 
 module.exports = Event;
