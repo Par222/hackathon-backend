@@ -16,6 +16,8 @@ const VenueSchema = new mongoose.Schema({
       eid: { type: String },
     },
   ],
+  floor: Number,
+  image: String,
 });
 
 const Venue = mongoose.model('Venue', VenueSchema);
