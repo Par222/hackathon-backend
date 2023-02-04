@@ -14,7 +14,8 @@ async function updateCommitee(committeeID, newCommittee) {
 }
 
 async function fetchCommitteeDetails(fields) {
-  const committee = Committee.findOne(fields);
+  const committee = await Committee.findOne(fields);
+  console.log(committee)
   return committee.toObject({ getters: true });
 }
 
