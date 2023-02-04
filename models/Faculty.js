@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const FacultySchema = new mongoose.Schema({
   name: {
@@ -10,6 +10,9 @@ const FacultySchema = new mongoose.Schema({
   },
   requests: Array,
   email: String,
+  signature: {
+    type: String,
+  },
 });
 
-module.exports = FacultySchema;
+module.exports = mongoose.model("Faculty", FacultySchema);
