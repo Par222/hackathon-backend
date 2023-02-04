@@ -12,9 +12,12 @@ const VenueSchema = new mongoose.Schema({
   },
   allotments: [
     {
-      date: { type: Date },
+      date: { type: String },
+      eid: { type: String },
     },
   ],
 });
 
-module.exports = VenueSchema;
+const Venue = mongoose.model('Venue', VenueSchema);
+
+module.exports = Venue;

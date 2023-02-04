@@ -7,5 +7,6 @@ router.get('/', eventsControllers.getEvents);
 router.delete('/', eventsControllers.deleteEvent);
 router.patch('/', eventsControllers.updateEvent);
 router.post('/venues', eventsControllers.getRooms);
+// router.get('/venue', eventsControllers.addVenue);
 
 module.exports = router;

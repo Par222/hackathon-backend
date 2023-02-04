@@ -10,15 +10,15 @@ const eventSchema = new mongoose.Schema({
     required: true,
   },
   date: {
-    type: Date,
+    type: String,
     required: true,
   },
   startTime: {
-    type: Date,
+    type: String,
     // required: true,
   },
   endTime: {
-    type: Date,
+    type: String,
     // required: true,
   },
   registrations: {
