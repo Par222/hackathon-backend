@@ -3,6 +3,7 @@ const userTypeHelper = require("../helpers/user-type");
 const committeHelper = require("../helpers/committee");
 const helper = require("../helpers/Mongo");
 const Student = require("../../models/Student");
+const Faculty = require("../../models/Faculty");
 
 async function userSignup(req, res, err) {
   let existingUser;
@@ -21,8 +22,12 @@ async function userSignup(req, res, err) {
         newUser.committeeID = committee?.id;
       }
       else if (userType === "Student") {
-        const committee = await helper?.postField(Student, userDetails);
-        newUser.committeeID = committee?.id;
+        const student = await helper?.postField(Student, userDetails);
+        newUser.studentID = student?.id;
+      }
+      else if(userType === "Faculty") {
+        const faculty = await helper?.postField(Faculty, userDetails);
+        newUser.facultyID = faculty?.id;
       }
       const userData = await userTypeHelper?.addUser(newUser);
       delete userData?.password;
