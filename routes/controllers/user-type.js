@@ -49,9 +49,10 @@ async function userLogin(req, res, err) {
         message: "Invalid credentials!",
       });
     }
+    else{
     delete existingUser?.password;
     res.status(200);
-    res.json({ user: existingUser });
+    res.json({ user: existingUser });}
   } catch (error) {
     throw new HTTPError("Error logging in!", 500);
   }

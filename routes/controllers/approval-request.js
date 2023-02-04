@@ -7,7 +7,49 @@ const committeeHelper = require("../helpers/committee");
 const emailService = require("../helpers/email-service");
 const moment = require("moment");
 const HttpError = require("../errors/http-error");
-const pdfGenerator = require("handlebars-pdf");
+const nodemailer = require("nodemailer");
+const hbs = require("nodemailer-express-handlebars");
+const path = require("path");
+
+async function sendEmail(config) {
+  let transporter = nodemailer.createTransport({
+    service: "gmail",
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false,
+    auth: {
+      user: "nodemailer69420@gmail.com",
+      pass: "aefj xelt ziln xhvx",
+    },
+    tls: {
+      rejectUnauthorized: false,
+    },
+  });
+
+  const handlebarOptions = {
+    viewEngine: {
+      partialsDir: path.resolve("../../views/"),
+      defaultLayout: false,
+    },
+    viewPath: path.resolve("../../views/"),
+  };
+
+  transporter.use("compile", hbs(handlebarOptions));
+
+  let mailOptions = {
+    from: "nodemailer69420e@gmail.com",
+    ...config,
+  };
+
+  transporter.sendMail(mailOptions, function (error, success) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log("Email sent successfully!");
+    }
+  });
+}
+// const pdfGenerator = require("handlebars-pdf");
 
 async function createApprovalRequest(req, res, err) {
   try {
@@ -22,7 +64,12 @@ async function createApprovalRequest(req, res, err) {
     const event = await helper?.getField(Event, {
       id: req?.body?.eventID,
     });
-    emailService?.sendEmail({
+    const committee = await committeeHelper?.fetchCommitteeDetails({
+      id: event?.committeeID,
+    });
+    const venue = await helper?.getField(Venue, { id: event?.venue });
+
+    sendEmail({
       to: faculty?.email,
       subject: "Permission Letter",
       template: "eventPermission",
@@ -77,26 +124,26 @@ async function approveApprovalRequest(req, res, err) {
         designation: "Dean",
       });
 
-      const document = {
-        template: "eventPermission",
-        context: {
-          committeeName: committee?.name,
-          committeeLogo: committee?.logo,
-          eventName: event?.name,
-          eventVenue: venue?.name,
-          eventDate: moment(new Date(event?.date)).format("DD MM YYYY"),
-          eventStartTime: event?.startTime,
-          eventEndTime: event?.endTime,
-          deanSignature: dean?.signature,
-          facultySignature: faculty?.signature,
-          genSecSignature: genSec?.signature,
-        },
-      };
+      // const document = {
+      //   template: "eventPermission",
+      //   context: {
+      //     committeeName: committee?.name,
+      //     committeeLogo: committee?.logo,
+      //     eventName: event?.name,
+      //     eventVenue: venue?.name,
+      //     eventDate: moment(new Date(event?.date)).format("DD MM YYYY"),
+      //     eventStartTime: event?.startTime,
+      //     eventEndTime: event?.endTime,
+      //     deanSignature: dean?.signature,
+      //     facultySignature: faculty?.signature,
+      //     genSecSignature: genSec?.signature,
+      //   },
+      // };
 
-      const pdf = await pdfGenerator.create(document);
-      console.log(pdf);
+      // const pdf = await pdfGenerator.create(document);
+      // console.log(pdf);
 
-      emailService?.sendEmail({
+      sendEmail({
         to: "paramrkothari@gmail.com",
         subject: "Event Alert",
         template: "studentNotif",
@@ -140,14 +187,14 @@ async function approveApprovalRequest(req, res, err) {
         attachments: newStatus?.permission_documents,
       };
       if (req?.body?.status_level === 1) {
-        emailService?.sendEmail({
+        sendEmail({
           ...emailConfig,
         });
       } else if (req?.body?.status_level === 2) {
         const dean = await helper?.getField(Faculty, {
           designation: "Dean",
         });
-        emailService?.sendEmail({
+        sendEmail({
           ...emailConfig,
           to: dean?.email,
           facultySignature: faculty?.id,

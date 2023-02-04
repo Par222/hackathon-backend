@@ -6,7 +6,7 @@ const eventSchema = new mongoose.Schema({
     required: true,
   },
   committee: {
-    type: Array,
+    type: mongoose.Types.ObjectId,
     required: true,
   },
   date: {
