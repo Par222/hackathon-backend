@@ -1,12 +1,13 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const authRoutes = require("./routes/auth-routes");
 const committeeRoutes = require("./routes/committee");
 const eventRoutes = require("./routes/events");
 const approvalRequestRoutes = require("./routes/approval-request");
+const facultyRoutes = require('./routes/faculty');
 
 // CORS error handling
 app.use((req, res, next) => {
@@ -24,8 +25,9 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use(`/api/auth/`, authRoutes);
 app.use(`/api/committee/`, committeeRoutes);
-app.use("/api/events", eventRoutes);
+app.use('/api/events', eventRoutes);
 app.use("/api/approval-request/", approvalRequestRoutes);
+app.use('/api/faculty', facultyRoutes);
 
 app.use((error, req, res, next) => {
   if (res.headerSent) {

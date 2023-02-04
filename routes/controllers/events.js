@@ -6,20 +6,20 @@ const moment = require('moment');
 
 const eventsControllers = {};
 
+eventsControllers.getVenue = async (req, res) => {
+  const result = await db.getField(Venue, { _id: req.body.id });
+  res.json(result);
+};
+
 eventsControllers.addVenue = async (req, res) => {
   const payload = {
     ...req.body,
   };
-  const result = await db.putField(
-    Venue,
-    {},
-    {
-      $set: {
-        image:
-          'https://www.brilliantpublicschool.org/assets/images/computer-lab.jpg',
-      },
-    }
-  );
+  //   const result = await db.putField(
+  //     Venue,
+  //     {},
+
+  //   );
   res.json(result);
 };
 
