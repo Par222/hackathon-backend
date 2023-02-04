@@ -9,6 +9,7 @@ const committeeRoutes = require("./routes/committee");
 const eventRoutes = require("./routes/events");
 const approvalRequestRoutes = require("./routes/approval-request");
 const facultyRoutes = require("./routes/faculty");
+const studentRoutes = require("./routes/student");
 
 // CORS error handling
 app.use((req, res, next) => {
@@ -30,6 +31,7 @@ app.use(`/api/committee/`, committeeRoutes);
 app.use("/api/events", eventRoutes);
 app.use("/api/approval-request/", approvalRequestRoutes);
 app.use("/api/faculty", facultyRoutes);
+app.use("/api/student/", studentRoutes);
 
 app.use((error, req, res, next) => {
   if (res.headerSent) {

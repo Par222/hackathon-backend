@@ -1,6 +1,8 @@
 const HTTPError = require("../errors/http-error");
 const userTypeHelper = require("../helpers/user-type");
 const committeHelper = require("../helpers/committee");
+const helper = require("../helpers/Mongo");
+const Student = require("../../models/Student");
 
 async function userSignup(req, res, err) {
   let existingUser;
@@ -16,6 +18,10 @@ async function userSignup(req, res, err) {
       const userType = req?.body?.user_type;
       if (userType === "Committee") {
         const committee = await committeHelper?.addCommittee(userDetails);
+        newUser.committeeID = committee?.id;
+      }
+      else if (userType === "Student") {
+        const committee = await helper?.postField(Student, userDetails);
         newUser.committeeID = committee?.id;
       }
       const userData = await userTypeHelper?.addUser(newUser);

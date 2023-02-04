@@ -11,46 +11,6 @@ const nodemailer = require("nodemailer");
 const hbs = require("nodemailer-express-handlebars");
 const path = require("path");
 
-async function sendEmail(config) {
-  let transporter = nodemailer.createTransport({
-    service: "gmail",
-    host: "smtp.gmail.com",
-    port: 587,
-    secure: false,
-    auth: {
-      user: "nodemailer69420@gmail.com",
-      pass: "aefj xelt ziln xhvx",
-    },
-    tls: {
-      rejectUnauthorized: false,
-    },
-  });
-
-  const handlebarOptions = {
-    viewEngine: {
-      partialsDir: path.resolve("../../views/"),
-      defaultLayout: false,
-    },
-    viewPath: path.resolve("../../views/"),
-  };
-
-  transporter.use("compile", hbs(handlebarOptions));
-
-  let mailOptions = {
-    from: "nodemailer69420e@gmail.com",
-    ...config,
-  };
-
-  transporter.sendMail(mailOptions, function (error, success) {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log("Email sent successfully!");
-    }
-  });
-}
-// const pdfGenerator = require("handlebars-pdf");
-
 async function createApprovalRequest(req, res, err) {
   try {
     const request = await approvalRequestHelper?.addApprovalRequest(req?.body);
@@ -61,6 +21,7 @@ async function createApprovalRequest(req, res, err) {
     const faculty = await helper?.getField(Faculty, {
       designation: "gs",
     });
+
     const event = await helper?.getField(Event, {
       id: req?.body?.eventID,
     });
@@ -69,7 +30,7 @@ async function createApprovalRequest(req, res, err) {
     });
     const venue = await helper?.getField(Venue, { id: event?.venue });
 
-    sendEmail({
+    emailService?.sendEmail({
       to: faculty?.email,
       subject: "Permission Letter",
       template: "eventPermission",
@@ -143,7 +104,7 @@ async function approveApprovalRequest(req, res, err) {
       // const pdf = await pdfGenerator.create(document);
       // console.log(pdf);
 
-      sendEmail({
+      emailService?.sendEmail({
         to: "paramrkothari@gmail.com",
         subject: "Event Alert",
         template: "studentNotif",
@@ -187,14 +148,14 @@ async function approveApprovalRequest(req, res, err) {
         attachments: newStatus?.permission_documents,
       };
       if (req?.body?.status_level === 1) {
-        sendEmail({
+        emailService?.sendEmail({
           ...emailConfig,
         });
       } else if (req?.body?.status_level === 2) {
         const dean = await helper?.getField(Faculty, {
           designation: "Dean",
         });
-        sendEmail({
+        emailService?.sendEmail({
           ...emailConfig,
           to: dean?.email,
           facultySignature: faculty?.id,
