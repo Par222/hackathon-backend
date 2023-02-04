@@ -10,16 +10,11 @@ eventsControllers.addVenue = async (req, res) => {
   const payload = {
     ...req.body,
   };
-  const result = await db.putField(
-    Venue,
-    {},
-    {
-      $set: {
-        image:
-          'https://www.brilliantpublicschool.org/assets/images/computer-lab.jpg',
-      },
-    }
-  );
+  //   const result = await db.putField(
+  //     Venue,
+  //     {},
+
+  //   );
   res.json(result);
 };
 
