@@ -7,14 +7,13 @@ const moment = require('moment');
 const eventsControllers = {};
 
 eventsControllers.createEvent = async (req, res) => {
-  const { name, committee, date, description } = req.body;
+  let { name, committee, date, description } = req.body;
   const payload = {
-    name,
-    committee,
-    date,
-    description,
+    ...req.body,
   };
-  const result = await db.postField(Event, req.body);
+  //   date = moment(date).format('DD/MM/YYYY');
+  //   payload.date = date;
+  const result = await db.postField(Event, payload);
   res.json(result);
 };
 
@@ -57,15 +56,15 @@ eventsControllers.updateEvent = async (req, res) => {
 eventsControllers.getRooms = async (req, res) => {
   let { date } = req.body;
   date = new Date(date);
-  date = moment(date).format('DD/MM/YYYY');
+  //   date = moment(date).format('DD/MM/YYYY');
   //   date = date.toISOString();
-  console.log(date);
+  //   console.log(date);
   const after = await db.getFields(Event, {
-    date: { $neq: date },
+    date: { $gt: date },
   });
-  //   const before = await db.getFields(Event, {
-  // date: { $lt: date },
-  //   });
+  const before = await db.getFields(Event, {
+    date: { $lt: date },
+  });
   res.json([...before, ...after]);
 };
 
