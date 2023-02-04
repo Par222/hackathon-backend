@@ -20,10 +20,17 @@ async function updateApprovalRequest(requestID, request) {
 async function addApprovalRequest(newRequest) {
   const request = new ApprovalRequest(newRequest);
   const requestData = await request.save();
-  return requestData.toObject({ getters: true 
+  return requestData.toObject({ getters: true });
+}
+
+async function fetchApprovalRequests(fields) {
+  const requests = await ApprovalRequest.find(fields);
+  return requests?.map((request) => {
+    return request.toObject({ getters: true });
   });
 }
 
 module.exports.addApprovalRequest = addApprovalRequest;
 module.exports.fetchApprovalRequest = fetchApprovalRequest;
 module.exports.updateApprovalRequest = updateApprovalRequest;
+module.exports.fetchApprovalRequests = fetchApprovalRequests;
