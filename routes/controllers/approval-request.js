@@ -37,7 +37,7 @@ async function createApprovalRequest(req, res, err) {
 
     const request = await approvalRequestHelper?.addApprovalRequest({
       ...req?.body,
-      facultyID: facultyID,
+      facultyID: faculty?.id,
     });
 
     emailService?.sendEmail({
@@ -64,7 +64,7 @@ async function createApprovalRequest(req, res, err) {
     res.json({
       request: {
         ...request,
-        facultyID: facultyID,
+        facultyID: faculty?.id,
       },
     });
   } catch (error) {
@@ -218,9 +218,13 @@ async function fetchAllRequests(req, res, err) {
     const requests = await approvalRequestHelper?.fetchApprovalRequests(
       req?.query
     );
+    const results =await Promise.all( requests?.map(async (request) => {
+      const event = await helper?.getField(Event, {id: request?.eventID});
+      return {...request, ...event};
+    }))
     res.status(200);
     res.json({
-      requests: requests,
+      requests: results,
     });
   } catch (error) {
     console.log(error);
