@@ -11,5 +11,6 @@ router.get('/v', eventsControllers.addVenue);
 router.get('/venues', eventsControllers.getVenue);
 router.post('/requests', eventsControllers.getRequests);
 router.get('/approved', eventsControllers.getApproved);
+router.get('/register', eventsControllers.regiterStudent);
 
 module.exports = router;
