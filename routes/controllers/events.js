@@ -170,7 +170,6 @@ eventsControllers.getApproved = async (req, res) => {
   const result = await db.getField(Event, { status: 'approved' });
   res.json(result);
 };
-module.exports = eventsControllers;
 
 eventsControllers.regiterStudent = async (req, res) => {
   const { eventid, studentid } = req.body;
@@ -181,3 +180,5 @@ eventsControllers.regiterStudent = async (req, res) => {
   );
   res.json(result);
 };
+
+module.exports = eventsControllers;
