@@ -47,10 +47,10 @@ eventsControllers.createEvent = async (req, res) => {
 };
 
 eventsControllers.getEvents = async (req, res) => {
-  const { usertype } = req.body;
+  const { user_type } = req.body;
   const { domain, keyword, id } = req.query;
   let keys = {};
-  if (usertype == 'student') {
+  if (user_type == 'Student') {
     keys.status = 'approved';
   }
   if (id) {
