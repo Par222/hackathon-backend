@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Event = require('../../models/events');
+const UserType = require('../../models/UserType');
 const Venue = require('../../models/Venue');
 const Faculty = require('../../models/Faculty');
 const db = require('../helpers/Mongo');

@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Event = require('../../models/events');
+const Committee = require('../../models/Committee');
 const Venue = require('../../models/Venue');
 const UserType = require('../../models/UserType');
 const db = require('../helpers/Mongo');
@@ -130,18 +131,18 @@ eventsControllers.getRooms = async (req, res) => {
   //   res.json([...before, ...after]);
 };
 
-eventsControllers.getRequests = async (res, req) => {
+eventsControllers.getRequests = async (req, res) => {
   let results;
   if (req.body.designation == 'gs') {
     results = await db.getFields(ApprovalRequest, {
       status_level: 1,
-      status: 'pending',
+      status: 'Pending',
     });
   } else if (req.body.designation == 'faculty') {
     results = await db.getFields(ApprovalRequest, {
       status_level: 2,
       facultyID: req.body.facultyid || req.body.facultyID,
-      status: 'pending',
+      status: 'Pending',
     });
   } else if (req.body.description == 'dean') {
     results = await db.getFields(ApprovalRequest, {
@@ -149,15 +150,21 @@ eventsControllers.getRequests = async (res, req) => {
     });
   }
   results = await Promise.all(
-    results.map(async (e) => {
+    results?.map(async (e) => {
       return await db.getField(Event, { _id: e.eventID });
     })
   );
   results = await Promise.all(
-    results.map(async (e) => {
+    results?.map(async (e) => {
       return await db.getField(Committee, { _id: e.committee });
     })
   );
+  res.json(results);
+};
+
+eventsControllers.getApproved = async (req, res) => {
+  const result = await db.getField(Event, { status: 'approved' });
+  res.json(result);
 };
 
 module.exports = eventsControllers;
