@@ -14,6 +14,10 @@ async function updateApprovalRequest(requestID, request) {
     request,
     { new: true }
   );
+  if(!updateApprovalRequest) {
+
+    return null;
+  }
   return updatedRequest.toObject({ getters: true });
 }
 

@@ -7,12 +7,13 @@ const Faculty = require("../../models/Faculty");
 async function addCommitteeDetails(req, res, err) {
   const committeeID = req?.params?.committeeID;
   try {
+    let faculty;
     if (req?.body?.faculty) {
-      const faculty = db?.getField(Faculty, {
+       faculty = db?.getField(Faculty, {
         name: req?.body?.faculty,
       });
     }
-    const updatedCommittee = committeeHelper?.updateCommitee(committeeID, {
+    const updatedCommittee = await committeeHelper?.updateCommitee(committeeID, {
       ...req?.body,
       faculty_coordinatorID: faculty?.id,
     });
