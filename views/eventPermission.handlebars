@@ -46,10 +46,10 @@
           >
             Respected Sir / Ma'am,
           </p>
-          <div style="margin-left: auto height: 50px; width: 50px">
+          <div style="margin-left: 72%; height: 50px; width: 50px">
             <img
               src={{committeeLogo}}
-              style="height: 100%; width: 100%; object-fit: cover; objext-position: center"
+              style="height: 100%; width: 100%; object-fit: contain; object-position: center"
             />
 
           </div>
@@ -67,33 +67,37 @@
         </div>
         <p>Thanking you,</p>
       </div>
-      <div style="width: 100%; display: flex">
-        <div style="width: 33%; height: 50px">
+      <div style="width: 100%; display: flex; padding: 0 20px; text-align: center">
+        <div style="width: 30%; height: 50px">
           <img
             src={{deanSignature}}
             style="height: 100%; width: 100%; object-fit: contain; object-position: center"
           />
           <hr />
-          <p>{{deanName}}</p>
+          <p style="">{{deanName}}</p>
+          <p>Dean</p>
 
         </div>
-        <div style="width: 33%; height: 50px; margin: 0 20px">
+        <div style="width: 30%; height: 50px; margin: 0 20px">
           <img
             src={{facultySignature}}
             style="height: 100%; width: 100%; object-fit: contain; object-position: center"
           />
           <hr />
           <p>{{facultyName}}</p>
+          <p>Faculty-in-charge</p>
         </div>
-        <div style="width: 33%; height: 50px">
+        <div style="width: 30%; height: 50px">
           <img
             src={{genSecSignature}}
             style="height: 100%; width: 100%; object-fit: contain; object-position: center"
           />
           <hr />
           <p>{{gsName}}</p>
+          <p>General Secretary</p>
         </div>
       </div>
+      <a href={{approvalLink}} style="display: block; margin: 10px 0">Click here to view more!</a>
       <div style="height: 20px; background-color: #363636; width: 100%"></div>
     </div>
   </body>

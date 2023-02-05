@@ -10,8 +10,10 @@ const HttpError = require("../errors/http-error");
 const nodemailer = require("nodemailer");
 const hbs = require("nodemailer-express-handlebars");
 const path = require("path");
+const pdfGenerator = require("handlebars-pdf");
 
 async function createApprovalRequest(req, res, err) {
+  const body = JSON.parse(JSON.stringify(req?.body));
   try {
     const request = await approvalRequestHelper?.addApprovalRequest(req?.body);
     res.status(200);
@@ -23,7 +25,7 @@ async function createApprovalRequest(req, res, err) {
     });
 
     const event = await helper?.getField(Event, {
-      id: req?.body?.eventID,
+      id: body?.eventID,
     });
     const committee = await committeeHelper?.fetchCommitteeDetails({
       id: event?.committeeID,
@@ -66,6 +68,7 @@ async function createApprovalRequest(req, res, err) {
 }
 
 async function approveApprovalRequest(req, res, err) {
+  const body = JSON.parse(JSON.stringify(req?.body));
   const requestID = req?.params?.requestID;
   try {
     const prevStatus = await approvalRequestHelper?.fetchApprovalRequest(
@@ -83,19 +86,22 @@ async function approveApprovalRequest(req, res, err) {
     });
     const venue = await helper?.getField(Venue, { id: event?.venue });
 
-    if (req?.body?.status_level === 3) {
+    const dean = await helper?.getField(Faculty, {
+      designation: "Dean",
+    });
+
+    console.log(prevStatus, body)
+
+    if (body?.status_level == 3) {
       const newStatus = await approvalRequestHelper?.updateApprovalRequest(
         requestID,
-        { ...req?.body, status: "Approved" }
+        { ...body, status: "Approved" }
       );
       await helper?.putField(
         Event,
         { id: prevStatus?.eventID },
         { status: "Approved" }
       );
-      const dean = await helper?.getField(Faculty, {
-        designation: "Dean",
-      });
 
       // const document = {
       //   template: "eventPermission",
@@ -127,20 +133,26 @@ async function approveApprovalRequest(req, res, err) {
           eventBanner: event?.banner,
           eventDescription: event?.description,
           eventDate: moment(new Date(event?.date)).format("DD MM YYYY"),
-          eventLink: `https://localhost:3000/${event?.id}`,
+          eventLink: `https://localhost:3000/api/events/${event?.id}`,
         },
       });
-    } else if (prevStatus?.status_level === req?.body?.status_level) {
+    } else if (prevStatus?.status_level == body?.status_level) {
       const newStatus = await approvalRequestHelper?.updateApprovalRequest(
         requestID,
-        { ...req?.body, status: "Rejected" }
+        { ...body, status: "Rejected" }
       );
+      console.log(newStatus)
       await helper?.putField(
         Event,
         { id: prevStatus?.eventID },
         { status: "Rejected" }
       );
     } else {
+      const newStatus = await approvalRequestHelper?.updateApprovalRequest(
+        requestID,
+        { ...body }
+      );
+
       const emailConfig = {
         to: faculty?.email,
         subject: "Permission Letter",
@@ -158,25 +170,35 @@ async function approveApprovalRequest(req, res, err) {
           genSecSignature: genSec?.signature,
           deanName: dean?.name,
           facultyName: faculty?.name,
-          gsName: gd?.name,
+          gsName: genSec?.name,
         },
         attachments: newStatus?.permission_documents,
       };
-      if (req?.body?.status_level === 1) {
+
+      console.log("wow");
+      console.log(body);
+      if (body?.status_level == 1) {
+        const context = {
+          ...emailConfig?.context,
+          approvalLink: `http://localhost:3000/authorities/faculty/${faculty?.id}`,
+        };
         emailService?.sendEmail({
           ...emailConfig,
-          approvalLink: `http://localhost:3000/authorities/faculty/${faculty?.id}`,
+          context: context,
         });
-      } else if (req?.body?.status_level === 2) {
+      } else if (body?.status_level == 2) {
         const dean = await helper?.getField(Faculty, {
           designation: "Dean",
         });
+        const context = {
+          ...emailConfig?.context,
+          facultySignature: faculty?.signature,
+          approvalLink: `http://localhost:3000/authorities/Dean`,
+        };
         emailService?.sendEmail({
           ...emailConfig,
           to: dean?.email,
-          facultySignature: faculty?.signature,
-          approvalLink: `http://localhost:3000/authorities/Dean`,
-
+          context: context,
         });
       }
     }

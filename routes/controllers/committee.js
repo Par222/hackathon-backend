@@ -1,20 +1,26 @@
-const Committee = require('../../models/Committee');
-const db = require('../helpers/Mongo');
-const HttpError = require('../errors/http-error');
-const committeeHelper = require('../helpers/committee');
+const Committee = require("../../models/Committee");
+const db = require("../helpers/Mongo");
+const HttpError = require("../errors/http-error");
+const committeeHelper = require("../helpers/committee");
+const Faculty = require("../../models/Faculty");
 
 async function addCommitteeDetails(req, res, err) {
   const committeeID = req?.params?.committeeID;
   try {
-    const updatedCommittee = committeeHelper?.updateCommitee(
-      committeeID,
-      req?.body
-    );
+    if (req?.body?.faculty) {
+      const faculty = db?.getField(Faculty, {
+        name: req?.body?.faculty,
+      });
+    }
+    const updatedCommittee = committeeHelper?.updateCommitee(committeeID, {
+      ...req?.body,
+      faculty_coordinatorID: faculty?.id,
+    });
     res.status(200);
     res.json({ committee: updatedCommittee });
   } catch (error) {
     console.log(error);
-    throw new HttpError('Error updating committee details!', 500);
+    throw new HttpError("Error updating committee details!", 500);
   }
 }
 
@@ -28,7 +34,7 @@ async function fetchCommitteeDetails(req, res, err) {
     res.json({ committee: committee });
   } catch (error) {
     console.log(error);
-    throw new HttpError('Error fetching committee details!', 500);
+    throw new HttpError("Error fetching committee details!", 500);
   }
 }
 
