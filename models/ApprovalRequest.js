@@ -18,6 +18,10 @@ const ApprovalRequestSchema = new mongoose.Schema({
     default: "Pending",
   },
   permission_documents: [{ type: String }],
+  facultyID: {
+    type: mongoose.Types.ObjectId,
+    ref: "Faculty",
+  },
 });
 
 module.exports = mongoose.model("ApprovalRequest", ApprovalRequestSchema);
