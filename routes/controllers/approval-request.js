@@ -15,11 +15,6 @@ const pdfGenerator = require("handlebars-pdf");
 async function createApprovalRequest(req, res, err) {
   const body = JSON.parse(JSON.stringify(req?.body));
   try {
-    const request = await approvalRequestHelper?.addApprovalRequest(req?.body);
-    res.status(200);
-    res.json({
-      request: request,
-    });
     const gs = await helper?.getField(Faculty, {
       designation: "gs",
     });
@@ -38,6 +33,11 @@ async function createApprovalRequest(req, res, err) {
 
     const faculty = await helper?.getField(Faculty, {
       id: committee?.faculty_coordinatorID,
+    });
+
+    const request = await approvalRequestHelper?.addApprovalRequest({
+      ...req?.body,
+      facultyID: facultyID,
     });
 
     emailService?.sendEmail({
@@ -59,6 +59,12 @@ async function createApprovalRequest(req, res, err) {
         facultyName: faculty?.name,
         gsName: gs?.name,
         approvalLink: "http://localhost:3000/authorities/gs",
+      },
+    });
+    res.json({
+      request: {
+        ...request,
+        facultyID: facultyID,
       },
     });
   } catch (error) {
@@ -90,7 +96,7 @@ async function approveApprovalRequest(req, res, err) {
       designation: "Dean",
     });
 
-    console.log(prevStatus, body)
+    console.log(prevStatus, body);
 
     if (body?.status_level == 3) {
       const newStatus = await approvalRequestHelper?.updateApprovalRequest(
@@ -141,7 +147,7 @@ async function approveApprovalRequest(req, res, err) {
         requestID,
         { ...body, status: "Rejected" }
       );
-      console.log(newStatus)
+      console.log(newStatus);
       await helper?.putField(
         Event,
         { id: prevStatus?.eventID },
